@@ -1,0 +1,41 @@
+#---
+#driver:
+#  name: vagrant
+#
+#provisioner:
+#  name: chef_zero
+#  require_chef_omnibus: 12.21.31
+#
+#platforms:
+#  - name: ubuntu-16.04
+#
+#suites:
+#  - name: default
+#    run_list:
+#      - recipe[custom_apache::default]
+#    attributes:
+---
+driver:
+  name: ec2
+  instance_type: t1.micro
+  retryable_tries: 120
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 13.7.16
+  deprecations_as_errors: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-16.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[custom_apache::default]
+    verifier:
+      inspec_tests:
+        - test/smoke/default
+    attributes:
